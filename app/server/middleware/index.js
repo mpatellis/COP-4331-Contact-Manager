@@ -11,19 +11,21 @@ module.exports = (app) => {
   
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
-  //app.use(cors());
 
-  app.use((req, res, next) => {
+  app.use(async (req, res, next) => {
     if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
       jsonwedtoken.verify(req.headers.authorization.split(' ')[1], config.secrets.jwt, (err, decode) => {
         req.user = decode;
         if (err) req.user = undefined;
-        next();
       })
     }else {
       req.user = undefined;
-      next();
     }
+    if (req.user)
+      await User.findById(req.user._id, (err, user) => {
+        if (!user) req.user = undefined;
+      })
+    next()
   });
 
 };
