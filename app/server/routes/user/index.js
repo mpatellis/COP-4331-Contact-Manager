@@ -13,12 +13,12 @@ module.exports = () => {
     router.route('/login')// :)
         .post(controller.user.login);
 
-    router.route('/user', loginRequired)
-        .get(controller.user.getById)
-        .put(controller.user.updateById)
-        .delete(controller.user.deleteById);
+    router.route('/')
+        .get(loginRequired, controller.user.getById)
+        .put(loginRequired, controller.user.updateById)
+        .delete(loginRequired, controller.user.deleteById);
     
-    router.route('/user/username/:username')// returns true if username exists
+    router.route('/username/:username')// returns true if username exists
         .get(controller.user.getByUsername);
 
     return router

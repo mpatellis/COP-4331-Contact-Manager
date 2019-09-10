@@ -9,8 +9,8 @@ module.exports = () => {
         return res.send('GET request successfull!!');
     });
 
-    router.use('/',loginRequired, contactsRoute());
-    router.use('/', userRoute());
+    router.use('/contacts',loginRequired, contactsRoute());
+    router.use('/user', userRoute());
 
     return router;
 };
