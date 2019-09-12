@@ -1,5 +1,5 @@
-var app = require('./app/server');
-var config = require('./app/server/config')
+var app = require('./server');
+var config = require('./server/config')
 var mongoose = require('mongoose');
 mongoose.set('useNewUrlParser', true)
     .set('useFindAndModify', false)
