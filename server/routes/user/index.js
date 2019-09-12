@@ -21,5 +21,12 @@ module.exports = () => {
   router.route('/username/:username')// returns true if username exists
     .get(controller.user.getByUsername)
 
+  router.route('/isverified')
+    .get(loginRequired, controller.support.isVerified)
+
+  router.route('/verify')
+    .get(loginRequired, controller.support.sendVerificationEmail)
+    .put(loginRequired, controller.support.verify)
+
   return router
 }

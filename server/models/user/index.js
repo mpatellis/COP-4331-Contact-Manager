@@ -9,7 +9,17 @@ const userSchema = new Schema({
     required: true,
     unique: true
   },
-
+  email: {
+    type: String,
+    required: true
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  key: {
+    type: Number
+  },
   hashPassword: {
     type: String,
     required: true
