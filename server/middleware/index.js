@@ -2,11 +2,12 @@ var config = require('./../config')
 var bodyParser = require('body-parser')
 var jsonwedtoken = require('jsonwebtoken')
 var User = require('../models/user')
+var cors = require('cors')
 
 // setup global middleware here
 
 module.exports = (app) => {
-  app.use(bodyParser.urlencoded({ extended: true }))
+  //app.options(cors())
   app.use(bodyParser.json())
 
   app.use(async (req, res, next) => {

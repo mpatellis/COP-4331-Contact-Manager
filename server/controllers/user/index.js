@@ -20,11 +20,14 @@ exports.register = (req, res) => { // :)
 
 exports.login = (req, res) => { // :)
   User.findOne({ username: req.body.username }, (err, user) => {
+    console.log(req.body)
     if (err) throw err
     if (!user) {
+      console.log('Incorect username!')
       res.status(401).json({ message: 'Incorect username!' })
     } else if (!user.authPassword(req.body.password, user.hashPassword)) {
-      res.status(401).json({ message: 'Incorect password1' })
+      console.log('Incorect password1')
+      res.status(401).json({ message: 'Incorect password' })
     } else {
       return res.json({ token: jwt.sign({ username: user.username, _id: user.id }, config.secrets.jwt) })
     }
