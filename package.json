@@ -14,6 +14,8 @@
   "author": "Isaac Lefler",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/core": "^4.4.2",
+    "@material-ui/icons": "^4.4.1",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "concurrently": "^4.1.2",

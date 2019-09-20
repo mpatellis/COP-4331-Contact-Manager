@@ -25,7 +25,7 @@ class PasswordShowHide extends Component {
     axios
         //.get('/user/allusers')
         .post("/user/login", user)
-        .then(res => {console.log(res.body)})
+        .then(res => {console.log(res)})
         .catch(err => {
           console.log(err.message)
         })
@@ -42,6 +42,7 @@ class PasswordShowHide extends Component {
     return (
         <div className="wrapper">
             <div className="container">
+               <nav className='navbar'><a href="/">home</a></nav>
                 <form>
                     <p>Login</p>
                     <input type="text" 
