@@ -9,7 +9,7 @@ import {
     Toolbar,    CssBaseline,    ExpansionPanel,    
     InputBase,  Link,           List, 
     Typography, TextField,      Divider,
-    IconButton, Card, CardContent, CardActions,
+    IconButton, 
 } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
@@ -17,8 +17,6 @@ import useStyles from './drawerStyle'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-
-
 
 export default function PersistentDrawerRight() {
   const classes = useStyles();
@@ -131,27 +129,36 @@ function SearchBar (props) {
   return null
 }
 
+// TODO figure out how to pass contacts into this function
 function ContactPanel (props) {
   if(isLogedIn && hasAccount)
   {
+    var i1 = {firstName:"Michael", lastName:"Patellis", email:"jasdkfl@gmail.com", phone:"3215055848"}
+    var i2 = {firstName:"asd", lastName:"qwe", email:"vzxcv@gmail.com", phone:"1234567"}
+    var contacts = [i1, i2]
     return (
-      <div className={classes.expansionWidith}>
-      <ExpansionPanel>
-        <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography className={classes.expansionHeading}>Expansion Panel 1</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-            sit amet blandit leo lobortis eget.
-          </Typography>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-    </div>
+      contacts.map((item) =>
+        <div className={classes.expansionWidith}>
+          <ExpansionPanel>
+            <ExpansionPanelSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography className={classes.expansionHeading}>
+                {item.firstName} {item.lastName} 
+              </Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Typography>
+                Email: {item.email} <br></br>
+                Phone: {item.phone}
+              </Typography>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        </div>
+      )
+      
     )
   }
   return null
