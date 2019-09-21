@@ -1,103 +1,31 @@
 import React from "react";
 import clsx from "clsx";
 import {
-  makeStyles,
-  useTheme,
-  Theme,
-  createStyles
+  makeStyles,   useTheme,
+  Theme,        createStyles,
 } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
+import {
+    Drawer,     AppBar,         Button,
+    Toolbar,    CssBaseline,    Link,
+    List,       Typography,     TextField,
+    Divider,    IconButton,      
+} from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
-import Logout from './logout'
 
-const drawerWidth = 300;
+import useStyles from './drawerStyle'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: "flex"
-    },
-    appBar: {
-      transition: theme.transitions.create(["margin", "width"], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
-      })
-    },
-    appBarShift: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      transition: theme.transitions.create(["margin", "width"], {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen
-      }),
-      marginRight: drawerWidth
-    },
-    title: {
-      flexGrow: 1
-    },
-    hide: {
-      display: "none"
-    },
-    drawer: {
-      width: drawerWidth,
-      flexShrink: 0
-    },
-    drawerPaper: {
-      width: drawerWidth
-    },
-    drawerHeader: {
-      display: "flex",
-      alignItems: "center",
-      padding: theme.spacing(0, 1),
-      ...theme.mixins.toolbar,
-      justifyContent: "flex-start"
-    },
-    textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1)
-    },
-    button: {
-      margin: theme.spacing(1)
-    },
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-      transition: theme.transitions.create("margin", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
-      }),
-      marginRight: -drawerWidth
-    },
-    contentShift: {
-      transition: theme.transitions.create("margin", {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen
-      }),
-      marginRight: 0
-    }
-  })
-);
 
 export default function PersistentDrawerRight() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-  const [hasAccount, setHasAccount] = React.useState(false)
+  const [hasAccount, setHasAccount] = React.useState(true)
   const [isLogedIn, setIsLogedIn] = React.useState(false)
 
-  const [username, setUsername] = React.useState('')
-  const [email, setEmail] = React.useState('')
-  const [password, setPassword] = React.useState('')
-  const [confirmPass, setConfirmPass] = React.useState('')
+  var password =''
+  var username =''
+  var email = ''
+
 
   function handleDrawerOpen() {
     setOpen(true);
@@ -107,8 +35,19 @@ export default function PersistentDrawerRight() {
     setOpen(false);
   }
 
+
   function handleSubmit() {
-      (hasAccount) ? setIsLogedIn(true) : setHasAccount(true)
+      console.log(username)
+      console.log(password)
+      console.log(email)
+      if (isLogedIn) {
+          setIsLogedIn(false)
+      } else if (hasAccount){
+        setIsLogedIn(true);
+        handleDrawerClose()
+      } else {
+        setHasAccount(true)
+      }
   }
 
   function toggleHasAccount() {
@@ -126,7 +65,7 @@ export default function PersistentDrawerRight() {
           autoComplete="username"
           margin="normal"
           variant="outlined"
-          onChange={e => setUsername(e.target.value)}
+          onChange={e => {username = e.target.value}}
           />;
     } 
     return null;  
@@ -142,7 +81,8 @@ export default function PersistentDrawerRight() {
         autoComplete="current-password"
         margin="normal"
         variant="outlined"
-        onChange={e => setPassword(e.target.value)}
+        onChange={e => {password = e.target.value}}
+        //value={password}
       />
       } 
       return null;  
@@ -159,7 +99,7 @@ export default function PersistentDrawerRight() {
           autoComplete="email"
           margin="normal"
           variant="outlined"
-          onChange={e => setEmail(e.target.value)}
+          onChange={e => {email = e.target.value}}
           />;
     } 
     return null;  
@@ -207,7 +147,7 @@ export default function PersistentDrawerRight() {
       >
         <div className={classes.drawerHeader}>
         <Typography variant="h6" noWrap className={classes.title}>
-        {(hasAccount) ? 'Please Login' : 'Please Create an Account'}
+        {(isLogedIn) ? 'Welcome':(hasAccount) ? 'Please Login' : 'Please Create an Account'}
         </Typography>
         </div>
         <Divider />
@@ -220,15 +160,15 @@ export default function PersistentDrawerRight() {
           className={classes.button}
           onClick={(handleSubmit)}
           >
-          {(hasAccount) ? 'Login' : 'Register'}
+          {(isLogedIn) ? 'Logout': (hasAccount) ? 'Login' : 'Register'}
         </Button>
         <Divider />
         <Link
           component="button"
           variant="body2"
-          onClick={(toggleHasAccount)}
+          onClick={((isLogedIn) ? null:toggleHasAccount)}
         >
-        {(hasAccount) ? 'Dont have an account? Register' : 'Already have an account? Login'} 
+        {(isLogedIn) ? 'Pink Pandas?':(hasAccount) ? 'Dont have an account? Register' : 'Already have an account? Login'} 
         </Link>
         
       </Drawer>
