@@ -105,6 +105,15 @@ export default function PersistentDrawerRight() {
     return null;  
 }
 
+function SearchBar (props) {
+  if(isLogedIn && hasAccount)
+  {
+    return 
+  }
+  return null
+
+}
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -128,6 +137,7 @@ export default function PersistentDrawerRight() {
             <MenuIcon />
           </IconButton>
         </Toolbar>
+        <SearchBar />
       </AppBar>
       <main
         className={clsx(classes.content, {

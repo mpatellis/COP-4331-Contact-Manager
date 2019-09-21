@@ -7,6 +7,7 @@ import Login from "./components/Login";
 import Menu from './components/menu'
 import Pieces from './components/Pieces'
 import Logout from './components/logout'
+
 class App extends Component {
   render() {
     return (
