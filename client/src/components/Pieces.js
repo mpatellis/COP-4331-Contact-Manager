@@ -6,12 +6,11 @@ import {
 } from "@material-ui/core/styles";
 import {
     Drawer,     AppBar,         Button,
-    Toolbar,    CssBaseline,    Link,
-    List,       Typography,     TextField,
+    Toolbar,    CssBaseline,    InputBase, 
+    Link, List, Typography,     TextField,
     Divider,    IconButton,      
 } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu";
-
 import useStyles from './drawerStyle'
 
 
@@ -108,7 +107,18 @@ export default function PersistentDrawerRight() {
 function SearchBar (props) {
   if(isLogedIn && hasAccount)
   {
-    return 
+    return (
+      <div className={classes.search}>
+            <InputBase
+            placeholder="Search"
+            classes={{
+              root: classes.inputRoot,
+              input: classes.inputInput
+            }}
+            inputProps={{"aria-label": "search "}}
+            />
+          </div>
+    )
   }
   return null
 
@@ -127,6 +137,7 @@ function SearchBar (props) {
           <Typography variant="h6" noWrap className={classes.title}>
             Login
           </Typography>
+          < SearchBar />
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -137,7 +148,6 @@ function SearchBar (props) {
             <MenuIcon />
           </IconButton>
         </Toolbar>
-        <SearchBar />
       </AppBar>
       <main
         className={clsx(classes.content, {
