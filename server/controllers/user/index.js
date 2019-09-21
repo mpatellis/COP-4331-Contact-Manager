@@ -93,13 +93,14 @@ exports.deleteById = (req, res) => { // :)
 
 exports.getByUsername = (req, res) => { // :)
   User.find({ username: req.params.username })
-    .exec((err, user) => {
-      if (err) {
-        res.send(err)
-      } else if (user) {
-        res.json({ exists: true })
-      } else {
-        res.json({ exists: false })
-      }
-    })
+  .exec((err, user) => {
+    var empty = !Object.keys(user).length
+    if (err) {
+      res.send(err)
+    } else if (!empty) {
+      res.json({ exists: true })
+    } else {
+      res.json({ exists: false })
+    }
+  })
 }

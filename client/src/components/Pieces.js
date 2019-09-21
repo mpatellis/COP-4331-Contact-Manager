@@ -1,30 +1,31 @@
 import React from "react";
 import clsx from "clsx";
 import {
-  makeStyles,   useTheme,
-  Theme,        createStyles,
-} from "@material-ui/core/styles";
-import {
     Drawer,     AppBar,         Button,
     Toolbar,    CssBaseline,    Link,
-    List,       Typography,     TextField,
+    Typography,     TextField,
     Divider,    IconButton,      
 } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu";
 
+import {Login, Register} from './auth'
+
 import useStyles from './drawerStyle'
+
 
 
 export default function PersistentDrawerRight() {
   const classes = useStyles();
-  const theme = useTheme();
+
   const [open, setOpen] = React.useState(true);
   const [hasAccount, setHasAccount] = React.useState(true)
   const [isLogedIn, setIsLogedIn] = React.useState(false)
+  const [Error, setError] = React.useState({})
 
   var password =''
   var username =''
   var email = ''
+
 
 
   function handleDrawerOpen() {
@@ -40,17 +41,25 @@ export default function PersistentDrawerRight() {
       console.log(username)
       console.log(password)
       console.log(email)
-      if (isLogedIn) {
+      setError({})
+      if (isLogedIn) { // Logout
           setIsLogedIn(false)
-      } else if (hasAccount){
-        setIsLogedIn(true);
-        handleDrawerClose()
-      } else {
-        setHasAccount(true)
+      } else if (hasAccount){ // Login
+        setError(Login(username,password))
+        if (!Error) {
+          setIsLogedIn(true);
+          handleDrawerClose()
+        }
+      } else { // Register
+        setError(Register(username, email, password))
+        if (!Error) {
+          setHasAccount(true)
+        }
       }
   }
 
   function toggleHasAccount() {
+      setError({})
       setHasAccount(!hasAccount)
   }
 
@@ -105,10 +114,35 @@ export default function PersistentDrawerRight() {
     return null;  
 }
 
+function ErrorLink (props) {
+  if (props.name === 'username' && Error.username) 
+    return <Link component="button" color="error"
+            variant="body2"
+            onClick={((isLogedIn) ? null:toggleHasAccount)}
+          >
+          {Error.username} 
+          </Link>
+  if (props.name === 'email' && Error.email) 
+    return <Link component="button" color="error"
+            variant="body2"
+            onClick={((isLogedIn) ? null:toggleHasAccount)}
+          >
+          {Error.email||1} 
+          </Link> 
+  if (props.name === 'password' && Error.password)
+    return <Link component="button" color="error"
+            variant="body2"
+            onClick={((isLogedIn) ? null:toggleHasAccount)}
+          >
+          {Error.password} 
+          </Link>
+  return null
+}
+
 function SearchBar (props) {
   if(isLogedIn && hasAccount)
   {
-    return 
+    return null
   }
   return null
 
@@ -144,6 +178,7 @@ function SearchBar (props) {
           [classes.contentShift]: open
         })}
       >
+
         <div className={classes.drawerHeader} />
       </main>
       <Drawer
@@ -162,8 +197,11 @@ function SearchBar (props) {
         </div>
         <Divider />
         <Username />
+        <ErrorLink name='username'/>
         <Email />
+        <ErrorLink name='email'/>
         <Password />
+        <ErrorLink name='password'/>
         <Button 
           variant="contained" 
           color="primary" 
