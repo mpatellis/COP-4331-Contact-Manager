@@ -6,7 +6,7 @@ import {
   } from "@material-ui/core/styles";
 
 const drawerWidth = 300;
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: "flex"
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) =>
       marginRight: drawerWidth
     },
     title: {
-      flexGrow: 1
+      flexGrow: 0
     },
     hide: {
       display: "none"
@@ -54,12 +54,12 @@ const useStyles = makeStyles((theme) =>
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(3),
+      padding: theme.spacing(0),
       transition: theme.transitions.create("margin", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen
       }),
-      marginRight: -drawerWidth
+      marginRight: 0
     },
     contentShift: {
       transition: theme.transitions.create("margin", {
@@ -82,7 +82,34 @@ const useStyles = makeStyles((theme) =>
         marginLeft: theme.spacing(3),
         width: 'auto',
       }
-    }
+    },
+    grow: {
+      flexGrow: 1,
+    },
+    searchIcon: {
+      width: theme.spacing(7),
+      height: '100%',
+      position: 'absolute',
+      pointerEvents: 'none',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    inputInput: {
+      padding: theme.spacing(1, 1, 1, 7),
+      transition: theme.transitions.create("width"),
+      width: "100%",
+      [theme.breakpoints.up("md")]: {
+        width: 200
+      }
+    },
+    expansionWidith: {
+      width: "100%"
+    },
+    expansionHeading: {
+      fontSize: theme.typography.pxToRem(15),
+      fontWeight: theme.typography.fontWeightRegular
+    },
   })
 );
 

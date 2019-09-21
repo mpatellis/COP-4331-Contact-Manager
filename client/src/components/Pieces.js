@@ -6,12 +6,18 @@ import {
 } from "@material-ui/core/styles";
 import {
     Drawer,     AppBar,         Button,
-    Toolbar,    CssBaseline,    InputBase, 
-    Link, List, Typography,     TextField,
-    Divider,    IconButton,      
+    Toolbar,    CssBaseline,    ExpansionPanel,    
+    InputBase,  Link,           List, 
+    Typography, TextField,      Divider,
+    IconButton, Card, CardContent, CardActions,
 } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu";
+import SearchIcon from "@material-ui/icons/Search";
 import useStyles from './drawerStyle'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+
 
 
 export default function PersistentDrawerRight() {
@@ -34,7 +40,6 @@ export default function PersistentDrawerRight() {
     setOpen(false);
   }
 
-
   function handleSubmit() {
       console.log(username)
       console.log(password)
@@ -43,7 +48,7 @@ export default function PersistentDrawerRight() {
           setIsLogedIn(false)
       } else if (hasAccount){
         setIsLogedIn(true);
-        handleDrawerClose()
+        //handleDrawerClose()
       } else {
         setHasAccount(true)
       }
@@ -109,19 +114,47 @@ function SearchBar (props) {
   {
     return (
       <div className={classes.search}>
-            <InputBase
-            placeholder="Search"
-            classes={{
-              root: classes.inputRoot,
-              input: classes.inputInput
-            }}
-            inputProps={{"aria-label": "search "}}
-            />
-          </div>
+        <div className={classes.searchIcon}>
+          <SearchIcon />
+        </div>
+        <InputBase
+          placeholder="Search"
+          classes={{
+            root: classes.inputRoot,
+            input: classes.inputInput
+          }}
+          inputProps={{ 'aria-label' : 'search' }}
+        />
+      </div>
     )
   }
   return null
+}
 
+function ContactPanel (props) {
+  if(isLogedIn && hasAccount)
+  {
+    return (
+      <div className={classes.expansionWidith}>
+      <ExpansionPanel>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography className={classes.expansionHeading}>Expansion Panel 1</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <Typography>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+            sit amet blandit leo lobortis eget.
+          </Typography>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    </div>
+    )
+  }
+  return null
 }
 
   return (
@@ -135,9 +168,10 @@ function SearchBar (props) {
       >
         <Toolbar>
           <Typography variant="h6" noWrap className={classes.title}>
-            Login
+            Contact Manager
           </Typography>
           < SearchBar />
+          <div className={classes.grow} />
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -154,7 +188,8 @@ function SearchBar (props) {
           [classes.contentShift]: open
         })}
       >
-        <div className={classes.drawerHeader} />
+        <div className={classes.drawerHeader}/>
+        <ContactPanel />
       </main>
       <Drawer
         className={classes.drawer}
@@ -190,7 +225,6 @@ function SearchBar (props) {
         >
         {(isLogedIn) ? 'Pink Pandas?':(hasAccount) ? 'Dont have an account? Register' : 'Already have an account? Login'} 
         </Link>
-        
       </Drawer>
     </div>
   );
