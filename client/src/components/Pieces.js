@@ -3,14 +3,16 @@ import clsx from "clsx";
 import {
     Drawer,     AppBar,         Button,
     Toolbar,    CssBaseline,    Link,
-    Typography,     TextField,
-    Divider,    IconButton,      
+    Typography, TextField,      ExpansionPanel,
+    Divider,    IconButton,     InputBase,
 } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu";
-
+import SearchIcon from "@material-ui/icons/Search";
 import {Login, Register} from './auth'
-
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import useStyles from './drawerStyle'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 
@@ -139,13 +141,64 @@ function ErrorLink (props) {
   return null
 }
 
+// TODO change if condition
 function SearchBar (props) {
-  if(isLogedIn && hasAccount)
+  //if(isLogedIn && hasAccount)
+  if(true)
   {
-    return null
+    return (
+      <div className={classes.search}>
+        <div className={classes.searchIcon}>
+          <SearchIcon />
+        </div>
+        <InputBase
+          placeholder="Search"
+          classes={{
+            root: classes.inputRoot,
+            input: classes.inputInput
+          }}
+          inputProps={{ 'aria-label' : 'search' }}
+        />
+      </div>
+    )
   }
   return null
+}
 
+// TODO figure out how to pass contacts into this function
+// Also change if condition
+function ContactPanel (props) {
+  //if(isLogedIn && hasAccount)
+  if(true)
+  {
+    var i1 = {firstName:"Michael", lastName:"Patellis", email:"jasdkfl@gmail.com", phone:"3215055848"}
+    var i2 = {firstName:"asd", lastName:"qwe", email:"vzxcv@gmail.com", phone:"1234567"}
+    var contacts = [i1, i2]
+    return (
+      contacts.map((item) =>
+        <div className={classes.expansionWidith}>
+          <ExpansionPanel>
+            <ExpansionPanelSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography className={classes.expansionHeading}>
+                {item.firstName} {item.lastName} 
+              </Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Typography>
+                Email: {item.email} <br></br>
+                Phone: {item.phone}
+              </Typography>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        </div>
+      )
+    )
+  }
+  return null
 }
 
   return (
@@ -161,6 +214,8 @@ function SearchBar (props) {
           <Typography variant="h6" noWrap className={classes.title}>
             Login
           </Typography>
+          < SearchBar />
+          <div className={classes.grow} />
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -171,15 +226,14 @@ function SearchBar (props) {
             <MenuIcon />
           </IconButton>
         </Toolbar>
-        <SearchBar />
       </AppBar>
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: open
         })}
       >
-
         <div className={classes.drawerHeader} />
+        <ContactPanel />
       </main>
       <Drawer
         className={classes.drawer}
