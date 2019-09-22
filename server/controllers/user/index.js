@@ -20,7 +20,6 @@ exports.register = (req, res) => { // :)
 
 exports.login = (req, res) => { // :)
   User.findOne({ username: req.body.username }, (err, user) => {
-    console.log(req.body)
     if (err) throw err
     if (!user) {
       console.log('Incorect username!')
@@ -57,6 +56,7 @@ exports.getAll = (req, res) => {
 }
 
 exports.getById = (req, res) => { // :)
+  console.log(req)
   User
     .findById(req.user._id, { _id: 0, hashPassword: 0 })
     .exec((err, user) => {

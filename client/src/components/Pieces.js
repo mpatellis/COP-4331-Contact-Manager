@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import {Login, Register} from './auth'
+import {Login, Register, getUserInfo} from './auth'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import useStyles from './drawerStyle'
@@ -17,6 +17,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from "@material-ui/icons/Delete";
+import JWT from 'jwt-client'
 
 
 
@@ -45,26 +46,38 @@ export default function PersistentDrawerRight() {
 
 
   function handleSubmit() {
-      console.log(username)
-      console.log(password)
-      console.log(email)
-      setError({})
-      if (isLogedIn) { // Logout
-          setIsLogedIn(false)
-      } else if (hasAccount){ // Login
-        setError(Login(username,password))
-        if (!Error) {
+    setError({})
+    if (isLogedIn) { // Logout
+        setIsLogedIn(false)
+    } else if (hasAccount){ // Login
+
+      Login(username,password)
+      .then(res => {
+        if (!Object.keys(res.Error).length) {
+          console.log('logging in')
           setIsLogedIn(true);
-          handleDrawerClose()
+          var token = JWT.read(JWT.get())
+          console.log(token)
+        } else {
+          setError(res.Error)
         }
-        setIsLogedIn(true);
-      } else { // Register
-        setError(Register(username, email, password))
-        if (!Error) {
+      })
+      .catch(err => {
+        setError({password: 'Incorrect Password'})
+      })
+    } else { // Register
+      Register(username, email, password)
+      .then(res => {
+        if (!Object.keys(res.Error).length) {
+          console.log('Registered')
           setHasAccount(true)
+        } else {
+          setError(res.Error)
         }
-      }
-  }
+      })
+      .catch()
+    }
+}
 
   function toggleHasAccount() {
       setError({})

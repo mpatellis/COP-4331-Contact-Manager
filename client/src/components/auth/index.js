@@ -1,8 +1,12 @@
 import {isEmail} from 'validator'
 import axios from 'axios'
+import JWT from 'jwt-client'
 
+axios.defaults.headers.common['Authorization'] = JWT.get();
 
-
+var getUserId = () => {
+    return JWT.remember().claim._id
+}
 // axios
 //         //.get('/user/allusers')
 //         .post("/user/login", user)
@@ -11,49 +15,96 @@ import axios from 'axios'
 //           console.log(err.message)
 //         })
 
-var Login = (username,password) => {
-    var Error = {}
+var Login = async(username,password) => {
+    var Res = {Error: {}}
     if (!username) {
-        Error.username = 'Please enter your username'
+        Res.Error.username = 'Please enter your username'
     } else {
-        axios.get(`user/username/${username}`)
-        .then(res => {
+        await axios.get(`user/username/${username}`)
+        .then(async res => {
             if (!res.data.exists) {
-                Error.username = 'Username does not exist'
+                Res.Error.username = 'Username does not exist'
             } else if (!password) {
-                Error.password = 'Please enter your password'
+                Res.Error.password = 'Please enter your password'
             } else {
                 // login
                 var user = {username: username, password: password}
-                axios.post('user/login', user)
+                await axios.post('user/login', user)
                 .then(res => {
-                    if (res.data.token) console.log(res.data.token)
+                    if (res.data.token) if (JWT.validate(res.data.token)) {
+                        JWT.keep(res.data.token);
+                      } else {
+                        JWT.forget();
+                      };
+                })
+                .catch(err => {
+                    Res.Error.password = 'Incorect Password'
+                    return Res
                 })
             }
+            return Res
             })
         .catch(err => {
-            console.log(err.message)
+            console.log(';(')
+            console.error(err)
         })
     } 
-    console.log(Error)
-    return Error
+    console.log('end')
+    console.log(Res.Error)
+    console.log('===')
+    return Res
 }
 
-var Register = (username, email, password) => {
-    var Error = {}
-    if (!username || username.length < 3) {
-        Error.username = `Please enter a username (3 or more chars)}`
+var Register = async(username, email, password) => {
+    var Res = {Error: {}}
+    if (!username) {
+        Res.Error.username = 'Please enter your username'
     } else {
-        // check if username exists
-        if (!email || !isEmail(email)) {
-            Error.email = 'please enter a valid'
-        } else if (!password) {
-            Error.password = 'Please enter your password'
-        } else {
-            // login
-        }
-    }
-    return Error
+        await axios.get(`user/username/${username}`)
+        .then(async res => {
+            if (res.data.exists) {
+                Res.Error.username = 'Username is taken'
+            } else if (!email || !isEmail(email)) {
+                Res.Error.email = 'Please enter a valid email'
+            } else if (!password) {
+                Res.Error.password = 'Please enter a password'
+            } else {
+                // register
+                var user = {username: username, email: email, password: password}
+                await axios.post('user/register', user)
+                .then(res => {
+                    console.log('succcess')
+                })
+                .catch(err => {
+                    Res.Error.password = 'Incorect Password'
+                    return Res
+                })
+            }
+            return Res
+            })
+        .catch(err => {
+            console.log(';(')
+            console.error(err)
+        })
+    } 
+    console.log('end')
+    console.log(Res.Error)
+    console.log('===')
+    return Res
 }
 
-export { Login, Register };
+
+
+var getUserInfo = async() => {
+    var Res = {Error: {}, user: {}}
+    var _id = getUserId()
+    console.log(_id)
+    await axios.get('/user')
+        .then( res => {
+            return res
+        })
+
+}
+
+
+export { Login, Register, getUserInfo };
