@@ -116,6 +116,9 @@ const useStyles = makeStyles((theme: Theme) =>
     extendedIcon: {
       marginRight: theme.spacing(1),
     },
+    contactDeleteButton: {
+      margin: theme.spacing(0),
+    },
   })
 );
 

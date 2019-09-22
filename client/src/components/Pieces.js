@@ -16,6 +16,8 @@ import useStyles from './drawerStyle'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from "@material-ui/icons/Delete";
+
 
 
 
@@ -188,12 +190,18 @@ function ContactPanel (props) {
               <Typography className={classes.expansionHeading}>
                 {item.firstName} {item.lastName} 
               </Typography>
+              <div className={classes.grow} />
             </ExpansionPanelSummary>
+            <Divider />
+
             <ExpansionPanelDetails>
-              <Typography>
+              <Typography className={classes.grow}>
                 Email: {item.email} <br></br>
                 Phone: {item.phone}
               </Typography>
+              <IconButton size="small" className={classes.contactDeleteButton} aria-label="delete">
+                <DeleteIcon />
+              </IconButton>
             </ExpansionPanelDetails>
           </ExpansionPanel>
         </div>
@@ -266,7 +274,7 @@ function EditOptions (props) {
       >
         <Toolbar>
           <Typography variant="h6" noWrap className={classes.title}>
-            Login
+            COP 4331 Contact Manager
           </Typography>
           < SearchBar />
           <div className={classes.grow} />
