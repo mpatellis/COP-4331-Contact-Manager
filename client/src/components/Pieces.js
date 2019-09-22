@@ -5,6 +5,7 @@ import {
     Toolbar,    CssBaseline,    Link,
     Typography, TextField,      ExpansionPanel,
     Divider,    IconButton,     InputBase,
+    Fab,
 } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
@@ -13,6 +14,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import useStyles from './drawerStyle'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AddIcon from '@material-ui/icons/Add';
 
 
 
@@ -52,6 +54,7 @@ export default function PersistentDrawerRight() {
           setIsLogedIn(true);
           handleDrawerClose()
         }
+        setIsLogedIn(true);
       } else { // Register
         setError(Register(username, email, password))
         if (!Error) {
@@ -201,6 +204,20 @@ function ContactPanel (props) {
   return null
 }
 
+// TODO change if statement
+function NewContactButton (props) {
+  // if (isLogedIn && hasAccount)
+  if (true)
+  {
+    return (
+      <Fab color="primary" aria-label="add" className={classes.fab}>
+        <AddIcon />
+      </Fab>
+    )
+  }
+  return null
+}
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -216,6 +233,7 @@ function ContactPanel (props) {
           </Typography>
           < SearchBar />
           <div className={classes.grow} />
+          <NewContactButton />
           <IconButton
             color="inherit"
             aria-label="open drawer"

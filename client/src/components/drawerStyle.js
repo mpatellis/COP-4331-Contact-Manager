@@ -110,6 +110,12 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: theme.typography.pxToRem(15),
       fontWeight: theme.typography.fontWeightRegular
     },
+    fab: {
+      margin: theme.spacing(1),
+    },
+    extendedIcon: {
+      marginRight: theme.spacing(1),
+    },
   })
 );
 
