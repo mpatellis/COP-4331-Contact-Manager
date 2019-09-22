@@ -15,6 +15,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import useStyles from './drawerStyle'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 
 
 
@@ -144,9 +145,9 @@ function ErrorLink (props) {
   return null
 }
 
-// TODO change if condition
+// TODO add functionality
 function SearchBar (props) {
-  //if(isLogedIn && hasAccount)
+  if(isLogedIn && hasAccount)
   if(true)
   {
     return (
@@ -169,10 +170,8 @@ function SearchBar (props) {
 }
 
 // TODO figure out how to pass contacts into this function
-// Also change if condition
 function ContactPanel (props) {
-  //if(isLogedIn && hasAccount)
-  if(true)
+  if(isLogedIn && hasAccount)
   {
     var i1 = {firstName:"Michael", lastName:"Patellis", email:"jasdkfl@gmail.com", phone:"3215055848"}
     var i2 = {firstName:"asd", lastName:"qwe", email:"vzxcv@gmail.com", phone:"1234567"}
@@ -204,14 +203,52 @@ function ContactPanel (props) {
   return null
 }
 
-// TODO change if statement
+// TODO add functionality
 function NewContactButton (props) {
-  // if (isLogedIn && hasAccount)
-  if (true)
+  if (isLogedIn && hasAccount)
   {
     return (
       <Fab color="primary" aria-label="add" className={classes.fab}>
         <AddIcon />
+      </Fab>
+    )
+  }
+  return null
+}
+
+// TODO Get proper object for mapping
+function Options (props) {
+
+  if (isLogedIn && hasAccount)
+  {
+    var usr = {label: "Username", val: "mpatellis"} 
+    var email = {label: "Email", val: "gmail.com"}
+    var ver = {label: "Email Verification", val: "True"}
+    var lists = [usr, email, ver]
+    return (
+      lists.map((item) =>
+      <TextField
+        id="standard-read-only-input"
+        label={item.label}
+        defaultValue={item.val}
+        className={classes.textField}
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      )
+    )
+  }
+  return null
+}
+
+function EditOptions (props) {
+  if(isLogedIn && hasAccount)
+  {
+    return (
+      <Fab color="secondary" size="small" aria-label="edit" className={classes.fab}>
+        <EditIcon />
       </Fab>
     )
   }
@@ -266,6 +303,8 @@ function NewContactButton (props) {
         <Typography variant="h6" noWrap className={classes.title}>
         {(isLogedIn) ? 'Welcome':(hasAccount) ? 'Please Login' : 'Please Create an Account'}
         </Typography>
+        <div className={classes.grow} />
+        <EditOptions />
         </div>
         <Divider />
         <Username />
@@ -274,6 +313,7 @@ function NewContactButton (props) {
         <ErrorLink name='email'/>
         <Password />
         <ErrorLink name='password'/>
+        < Options />
         <Button 
           variant="contained" 
           color="primary" 
