@@ -28,7 +28,7 @@ export default function PersistentDrawerRight() {
   const [hasAccount, setHasAccount] = React.useState(true)
   const [isLogedIn, setIsLogedIn] = React.useState(false)
   const [editable, setEditable] = React.useState(true)
-  const [isVerified, setVerification] = React.useState(false)
+  const [isVerified, setVerification] = React.useState(true)
   const [Error, setError] = React.useState({})
 
   var password =''
