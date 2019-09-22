@@ -43,6 +43,7 @@ export default function PersistentDrawerRight() {
 
   function handleDrawerClose() {
     setOpen(false);
+    setVerification()
   }
 
 
@@ -278,7 +279,6 @@ export default function PersistentDrawerRight() {
 
   function HandleEdit (props) {
     setEditable(!editable)
-    console.log(editable)
   }
 
   function EditOptions (props) {
@@ -295,7 +295,6 @@ export default function PersistentDrawerRight() {
 
   // TODO Change onClick to resend email verify
   function VerifyEmailLink (props) {
-    var isVerified = false
     if(isLogedIn && hasAccount && !isVerified)
     {
       return (
