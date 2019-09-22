@@ -5,7 +5,7 @@ import {
     Toolbar,    CssBaseline,    Link,
     Typography, TextField,      ExpansionPanel,
     Divider,    IconButton,     InputBase,
-    Fab,
+    Fab,        Snackbar,
 } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
@@ -27,6 +27,8 @@ export default function PersistentDrawerRight() {
   const [open, setOpen] = React.useState(true);
   const [hasAccount, setHasAccount] = React.useState(true)
   const [isLogedIn, setIsLogedIn] = React.useState(false)
+  const [editable, setEditable] = React.useState(true)
+  const [isVerified, setVerification] = React.useState(false)
   const [Error, setError] = React.useState({})
 
   var password =''
@@ -122,146 +124,230 @@ export default function PersistentDrawerRight() {
     return null;  
 }
 
-function ErrorLink (props) {
-  if (props.name === 'username' && Error.username) 
-    return <Link component="button" color="error"
-            variant="body2"
-            onClick={((isLogedIn) ? null:toggleHasAccount)}
-          >
-          {Error.username} 
-          </Link>
-  if (props.name === 'email' && Error.email) 
-    return <Link component="button" color="error"
-            variant="body2"
-            onClick={((isLogedIn) ? null:toggleHasAccount)}
-          >
-          {Error.email||1} 
-          </Link> 
-  if (props.name === 'password' && Error.password)
-    return <Link component="button" color="error"
-            variant="body2"
-            onClick={((isLogedIn) ? null:toggleHasAccount)}
-          >
-          {Error.password} 
-          </Link>
-  return null
-}
-
-// TODO add functionality
-function SearchBar (props) {
-  if(isLogedIn && hasAccount)
-  if(true)
-  {
-    return (
-      <div className={classes.search}>
-        <div className={classes.searchIcon}>
-          <SearchIcon />
-        </div>
-        <InputBase
-          placeholder="Search"
-          classes={{
-            root: classes.inputRoot,
-            input: classes.inputInput
-          }}
-          inputProps={{ 'aria-label' : 'search' }}
-        />
-      </div>
-    )
-  }
-  return null
-}
-
-// TODO figure out how to pass contacts into this function
-function ContactPanel (props) {
-  if(isLogedIn && hasAccount)
-  {
-    var i1 = {firstName:"Michael", lastName:"Patellis", email:"jasdkfl@gmail.com", phone:"3215055848"}
-    var i2 = {firstName:"asd", lastName:"qwe", email:"vzxcv@gmail.com", phone:"1234567"}
-    var contacts = [i1, i2]
-    return (
-      contacts.map((item) =>
-        <div className={classes.expansionWidith}>
-          <ExpansionPanel>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
+  function ErrorLink (props) {
+    if (props.name === 'username' && Error.username) 
+      return <Link component="button" color="error"
+              variant="body2"
+              onClick={((isLogedIn) ? null:toggleHasAccount)}
             >
-              <Typography className={classes.expansionHeading}>
-                {item.firstName} {item.lastName} 
-              </Typography>
-              <div className={classes.grow} />
-            </ExpansionPanelSummary>
-            <Divider />
+            {Error.username} 
+            </Link>
+    if (props.name === 'email' && Error.email) 
+      return <Link component="button" color="error"
+              variant="body2"
+              onClick={((isLogedIn) ? null:toggleHasAccount)}
+            >
+            {Error.email||1} 
+            </Link> 
+    if (props.name === 'password' && Error.password)
+      return <Link component="button" color="error"
+              variant="body2"
+              onClick={((isLogedIn) ? null:toggleHasAccount)}
+            >
+            {Error.password} 
+            </Link>
+    return null
+  }
 
-            <ExpansionPanelDetails>
-              <Typography className={classes.grow}>
-                Email: {item.email} <br></br>
-                Phone: {item.phone}
-              </Typography>
-              <IconButton size="small" className={classes.contactDeleteButton} aria-label="delete">
-                <DeleteIcon />
-              </IconButton>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+  // TODO add functionality
+  function SearchBar (props) {
+    if(isLogedIn && hasAccount)
+    if(true)
+    {
+      return (
+        <div className={classes.search}>
+          <div className={classes.searchIcon}>
+            <SearchIcon />
+          </div>
+          <InputBase
+            placeholder="Search"
+            classes={{
+              root: classes.inputRoot,
+              input: classes.inputInput
+            }}
+            inputProps={{ 'aria-label' : 'search' }}
+          />
         </div>
       )
-    )
+    }
+    return null
   }
-  return null
-}
 
-// TODO add functionality
-function NewContactButton (props) {
-  if (isLogedIn && hasAccount)
-  {
-    return (
-      <Fab color="primary" aria-label="add" className={classes.fab}>
-        <AddIcon />
-      </Fab>
-    )
+  // TODO figure out how to pass contacts into this function
+  function ContactPanel (props) {
+    if(isLogedIn && hasAccount)
+    {
+      var i1 = {firstName:"Michael", lastName:"Patellis", email:"jasdkfl@gmail.com", phone:"3215055848"}
+      var i2 = {firstName:"asd", lastName:"qwe", email:"vzxcv@gmail.com", phone:"1234567"}
+      var contacts = [i1, i2]
+      return (
+        contacts.map((item) =>
+          <div className={classes.expansionWidith} key={contacts.toString()}>
+            <ExpansionPanel>
+              <ExpansionPanelSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography className={classes.expansionHeading}>
+                  {item.firstName} {item.lastName} 
+                </Typography>
+                <div className={classes.grow} />
+              </ExpansionPanelSummary>
+              <Divider />
+
+              <ExpansionPanelDetails>
+                <Typography className={classes.grow}>
+                  Email: {item.email} <br></br>
+                  Phone: {item.phone}
+                </Typography>
+                <IconButton size="small" className={classes.contactDeleteButton} aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          </div>
+        )
+      )
+    }
+    return null
   }
-  return null
-}
 
-// TODO Get proper object for mapping
-function Options (props) {
+  // TODO add functionality
+  function NewContactButton (props) {
+    if (isLogedIn && hasAccount)
+    {
+      return (
+        <Fab color="primary" aria-label="add" className={classes.fab}>
+          <AddIcon />
+        </Fab>
+      )
+    }
+    return null
+  }
 
-  if (isLogedIn && hasAccount)
-  {
-    var usr = {label: "Username", val: "mpatellis"} 
-    var email = {label: "Email", val: "gmail.com"}
-    var ver = {label: "Email Verification", val: "True"}
-    var lists = [usr, email, ver]
-    return (
-      lists.map((item) =>
-      <TextField
-        id="standard-read-only-input"
-        label={item.label}
-        defaultValue={item.val}
-        className={classes.textField}
-        margin="normal"
-        InputProps={{
-          readOnly: true,
+  // TODO Get proper object for mapping
+  function Options (props) {
+    if (isLogedIn && hasAccount)
+    {
+      var usr = {label: "Username", val: "mpatellis"} 
+      var email = {label: "Email", val: "gmail.com"}
+      var lists = [usr, email]
+      var bool = editable
+      console.log(bool)
+      return (
+        lists.map((item) =>
+        <TextField
+          id="standard-read-only-input"
+          label={item.label}
+          defaultValue={item.val}
+          className={classes.textField}
+          margin="normal"
+          InputProps={{
+            readOnly: editable,
+          }}
+        />
+        )
+      )
+    }
+    return null
+  }
+
+  // TODO feed in real verification string
+  function VerifiedEmail (props) {
+    if (isLogedIn && hasAccount)
+    {
+      var isVerifiedStr = "False"
+      if (isVerified)
+        isVerifiedStr = "True"
+      return (
+        <TextField
+          id="standard-read-only-input"
+          label="Verified Email"
+          defaultValue={isVerifiedStr}
+          className={classes.textField}
+          margin="normal"
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      )
+    }
+    return null
+  }
+
+  function HandleEdit (props) {
+    setEditable(!editable)
+    console.log(editable)
+  }
+
+  function EditOptions (props) {
+    if(isLogedIn && hasAccount)
+    {
+      return (
+        <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(HandleEdit)}>
+          <EditIcon />
+        </Fab>
+      )
+    }
+    return null
+  }
+
+  // TODO Change onClick to resend email verify
+  function VerifyEmailLink (props) {
+    var isVerified = false
+    if(isLogedIn && hasAccount && !isVerified)
+    {
+      return (
+        <Link
+            component="button"
+            variant="body2"
+            onClick={(HandleVerifyEmailLink)}
+          >
+            Click here to verify your email
+          </Link>
+      )
+    }
+    return null
+  }
+
+  // TODO send email code again
+  function HandleVerifyEmailLink (props) {
+    
+  }
+
+  // TODO accept verification code to update user's verification
+  function VerifyEmailBanner (props) {
+    if(!isVerified && isLogedIn && hasAccount)
+    {
+      return (
+        <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
         }}
+        open={open}
+        ContentProps={{
+          'aria-describedby': 'message-id',
+        }}
+        message={<span id="message-id">Enter your email verification code</span>}
+        action={[
+          <TextField
+            id="outlined-name"
+            label="Email Verify Code"
+            className={classes.emailTextField}
+            margin="normal"
+            variant="outlined"
+            InputProps={{
+              className: classes.emailCodeInput
+            }}
+          />
+        ]}
       />
       )
-    )
+    }
+    return null
   }
-  return null
-}
-
-function EditOptions (props) {
-  if(isLogedIn && hasAccount)
-  {
-    return (
-      <Fab color="secondary" size="small" aria-label="edit" className={classes.fab}>
-        <EditIcon />
-      </Fab>
-    )
-  }
-  return null
-}
 
   return (
     <div className={classes.root}>
@@ -297,6 +383,7 @@ function EditOptions (props) {
       >
         <div className={classes.drawerHeader} />
         <ContactPanel />
+        <VerifyEmailBanner />
       </main>
       <Drawer
         className={classes.drawer}
@@ -322,6 +409,8 @@ function EditOptions (props) {
         <Password />
         <ErrorLink name='password'/>
         < Options />
+        <VerifiedEmail />
+        <VerifyEmailLink />
         <Button 
           variant="contained" 
           color="primary" 
@@ -336,7 +425,7 @@ function EditOptions (props) {
           variant="body2"
           onClick={((isLogedIn) ? null:toggleHasAccount)}
         >
-        {(isLogedIn) ? 'Pink Pandas?':(hasAccount) ? 'Dont have an account? Register' : 'Already have an account? Login'} 
+        {(isLogedIn) ? '':(hasAccount) ? 'Dont have an account? Register' : 'Already have an account? Login'} 
         </Link>
         
       </Drawer>

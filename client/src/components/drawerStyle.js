@@ -4,6 +4,8 @@ import {
     Theme,
     createStyles
   } from "@material-ui/core/styles";
+  // import { amber, green } from '@material-ui/core/colors';
+
 
 const drawerWidth = 300;
 const useStyles = makeStyles((theme: Theme) =>
@@ -119,6 +121,13 @@ const useStyles = makeStyles((theme: Theme) =>
     contactDeleteButton: {
       margin: theme.spacing(0),
     },
+    emailTextField: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+    },
+    emailCodeInput: {
+      color: "white"
+    }
   })
 );
 
