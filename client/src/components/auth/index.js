@@ -81,116 +81,139 @@ var Register = async(username, email, password) => {
 
 
 var getUserInfo = async() => {
+    var Res
     await axios.get('/user')
         .then( res => {
             console.log(res.data)
-            return res.data
+            Res = res.data
         })
         .catch()
+    return Res
 }
 
 var updateUserInfo = async (user) => {
+    var Res
     await axios.put('/user', user)
         .then( res => {
             console.log(res.data)
-            return res.data
+            Res = res.data
         })
         .catch()
+    return Res
 }
 
 var deleteUser = async () => {
+    var Res
     await axios.delete('/user')
         .then(res => {
             console.log(res.data)
-            return res.data
+            Res = res.data
         })
         .catch()
+    return Res
 }
 // returns true if user is verified
 var isVerified = async (user) => {
+    var Res
     await axios.get('/user/isverified', user)
         .then( res => {
             console.log(res.data.isVerified)
             if (res.data.isVerified)
                 return res.data.isVerified
-            return false
+            Res = false
         })
         .catch()
+    return Res
 }
 
 var sendVerificationEmail = async () => {
+    var Res
     await axios.get('/user/verify')
         .then( res => {
             console.log(res.data)
-            return res.data
+            Res = res.data
         })
         .catch()
 }
 
 // returns true if correct code
 var verifyUser = async (code) => {
+    var Res
     await axios.put('/user/verify',{code: code})
         .then( res => {
             console.log(!!res.data.n)
-            return !!res.data.n
+            Res = !!res.data.n
         })
         .catch()
+    return Res
 }
 
 
 
 var addContact = async (contact) => {
+    var Res
     await axios.post('/contacts', contact)
         .then(res => {
             console.log(res.data)
-            return res.data
+            Res = res.data
         })
         .catch()
+    return Res
 }
 
 var getAllContacts = async () => {
+    var Res
     await axios.get('/contacts')
         .then(res => {
             console.log(res.data)
-            return res.data
+            Res = res.data
         })
         .catch()
+    return Res
 }
 
 var searchContacts = async (search) => {
+    var Res
     await axios.post('/contacts/search', {search: search})
         .then(res => {
             console.log(res.data)
-            return res.data
+            Res = res.data
         })
         .catch(err => console.log)
+        return Res
 }
 
 var getContactById = async (id) => {
+    var Res
     await axios.get(`/contacts/id/${id}`,)
         .then(res => {
             console.log(res.data)
-            return res.data
+            Res = res.data
         })
         .catch(err => console.log)
+    return Res
 }
 
 var updateContactById = async (id, body) => {
+    var Res
     await axios.put(`/contacts/id/${id}`, body)
         .then(res => {
             console.log(res.data)
-            return res.data
+            Res = res.data
         })
         .catch(err => console.log)
+    return Res
 }
 
 var deleteContactById = async (id) => {
+    var Res
     await axios.delete(`/contacts/id/${id}`)
         .then(res => {
             console.log(res.data)
-            return res.data
+            Res = res.data
         })
         .catch(err => console.log)
+    return Res
 }
 
 export { Login, Register, getUserInfo, updateUserInfo, deleteUser,

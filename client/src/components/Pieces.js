@@ -17,7 +17,10 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from "@material-ui/icons/Delete";
 import JWT from 'jwt-client'
 
-import {Login, Register, getUserInfo} from './auth'
+import { Login, Register, getUserInfo, updateUserInfo, deleteUser,
+    isVerified, sendVerificationEmail, verifyUser, addContact,
+    getAllContacts, searchContacts, getContactById, updateContactById,
+    deleteContactById } from './auth'
 import useStyles from './drawerStyle'
 
 
@@ -30,10 +33,12 @@ export default function PersistentDrawerRight() {
   const [editable, setEditable] = React.useState(true)
   const [isVerified, setVerification] = React.useState(false)
   const [Error, setError] = React.useState({})
+  const [contacts, setContacts] = React.useState([])
 
   var password =''
   var username =''
   var email = ''
+  var search = ''
 
 
 
@@ -161,40 +166,59 @@ export default function PersistentDrawerRight() {
     return null
   }
 
-  // TODO add functionality
-  function SearchBar (props) {
-    if(isLogedIn && hasAccount)
-    if(true)
-    {
-      return (
-        <div className={classes.search}>
-          <div className={classes.searchIcon}>
-            <SearchIcon />
-          </div>
-          <InputBase
-            placeholder="Search"
-            classes={{
-              root: classes.inputRoot,
-              input: classes.inputInput
-            }}
-            inputProps={{ 'aria-label' : 'search' }}
-          />
-        </div>
-      )
+    // TODO add functionality
+    function SearchBar (props) {
+      if(isLogedIn && hasAccount)
+      {
+        return (
+          <div className={classes.search}>
+            <InputBase
+              placeholder="Search"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput
+              }}
+              inputProps={{ 'aria-label' : 'search' }}
+              onChange={e => {search = e.target.value}}
+            />
+          </div> 
+        )
+      }
+      return null
     }
-    return null
+  
+    function SearchButton () {
+      if(isLogedIn && hasAccount) {
+        return (
+          <IconButton size="small" 
+            className={classes.searchButton}
+            aria-label="search"
+            onClick={handleSearch}>
+                    <SearchIcon />
+                  </IconButton>
+        )
+      } else return null
+    }
+  function handleSearch() {
+    searchContacts(search)
+    .then(res => {
+
+      setContacts(res)
+    })
+    
   }
 
   // TODO figure out how to pass contacts into this function
   function ContactPanel (props) {
     if(isLogedIn && hasAccount)
     {
-      var i1 = {firstName:"Michael", lastName:"Patellis", email:"jasdkfl@gmail.com", phone:"3215055848"}
-      var i2 = {firstName:"asd", lastName:"qwe", email:"vzxcv@gmail.com", phone:"1234567"}
-      var contacts = [i1, i2]
+      // var i1 = {firstName:"Michael", lastName:"Patellis", email:"jasdkfl@gmail.com", phone:"3215055848"}
+      // var i2 = {firstName:"asd", lastName:"qwe", email:"vzxcv@gmail.com", phone:"1234567"}
+      // var contacts = [i1, i2]
+      var con = contacts || []
       return (
-        contacts.map((item) =>
-          <div className={classes.expansionWidith} key={contacts.toString()}>
+        con.map((item) =>
+          <div className={classes.expansionWidith} key={item._id}>
             <ExpansionPanel>
               <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -373,6 +397,7 @@ export default function PersistentDrawerRight() {
             COP 4331 Contact Manager
           </Typography>
           < SearchBar />
+          <SearchButton />
           <div className={classes.grow} />
           <NewContactButton />
           <IconButton
