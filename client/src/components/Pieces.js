@@ -9,17 +9,16 @@ import {
 } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import {Login, Register, getUserInfo} from './auth'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import useStyles from './drawerStyle'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from "@material-ui/icons/Delete";
 import JWT from 'jwt-client'
 
-
+import {Login, Register, getUserInfo} from './auth'
+import useStyles from './drawerStyle'
 
 
 export default function PersistentDrawerRight() {
@@ -52,6 +51,7 @@ export default function PersistentDrawerRight() {
     setError({})
     if (isLogedIn) { // Logout
         setIsLogedIn(false)
+        JWT.forget();
     } else if (hasAccount){ // Login
 
       Login(username,password)
@@ -59,8 +59,6 @@ export default function PersistentDrawerRight() {
         if (!Object.keys(res.Error).length) {
           console.log('logging in')
           setIsLogedIn(true);
-          var token = JWT.read(JWT.get())
-          console.log(token)
         } else {
           setError(res.Error)
         }

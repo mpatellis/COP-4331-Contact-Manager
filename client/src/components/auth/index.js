@@ -2,18 +2,8 @@ import {isEmail} from 'validator'
 import axios from 'axios'
 import JWT from 'jwt-client'
 
-axios.defaults.headers.common['Authorization'] = JWT.get();
-
-var getUserId = () => {
-    return JWT.remember().claim._id
-}
-// axios
-//         //.get('/user/allusers')
-//         .post("/user/login", user)
-//         .then(res => {console.log(res)})
-//         .catch(err => {
-//           console.log(err.message)
-//         })
+var token = JWT.get()
+axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
 var Login = async(username,password) => {
     var Res = {Error: {}}
@@ -49,9 +39,7 @@ var Login = async(username,password) => {
             console.error(err)
         })
     } 
-    console.log('end')
-    console.log(Res.Error)
-    console.log('===')
+    searchContacts()
     return Res
 }
 
@@ -87,24 +75,125 @@ var Register = async(username, email, password) => {
             console.error(err)
         })
     } 
-    console.log('end')
-    console.log(Res.Error)
-    console.log('===')
     return Res
 }
 
 
 
 var getUserInfo = async() => {
-    var Res = {Error: {}, user: {}}
-    var _id = getUserId()
-    console.log(_id)
     await axios.get('/user')
         .then( res => {
-            return res
+            console.log(res.data)
+            return res.data
         })
+        .catch()
+}
 
+var updateUserInfo = async (user) => {
+    await axios.put('/user', user)
+        .then( res => {
+            console.log(res.data)
+            return res.data
+        })
+        .catch()
+}
+
+var deleteUser = async () => {
+    await axios.delete('/user')
+        .then(res => {
+            console.log(res.data)
+            return res.data
+        })
+        .catch()
+}
+// returns true if user is verified
+var isVerified = async (user) => {
+    await axios.get('/user/isverified', user)
+        .then( res => {
+            console.log(res.data.isVerified)
+            if (res.data.isVerified)
+                return res.data.isVerified
+            return false
+        })
+        .catch()
+}
+
+var sendVerificationEmail = async () => {
+    await axios.get('/user/verify')
+        .then( res => {
+            console.log(res.data)
+            return res.data
+        })
+        .catch()
+}
+
+// returns true if correct code
+var verifyUser = async (code) => {
+    await axios.put('/user/verify',{code: code})
+        .then( res => {
+            console.log(!!res.data.n)
+            return !!res.data.n
+        })
+        .catch()
 }
 
 
-export { Login, Register, getUserInfo };
+
+var addContact = async (contact) => {
+    await axios.post('/contacts', contact)
+        .then(res => {
+            console.log(res.data)
+            return res.data
+        })
+        .catch()
+}
+
+var getAllContacts = async () => {
+    await axios.get('/contacts')
+        .then(res => {
+            console.log(res.data)
+            return res.data
+        })
+        .catch()
+}
+
+var searchContacts = async (search) => {
+    await axios.post('/contacts/search', {search: search})
+        .then(res => {
+            console.log(res.data)
+            return res.data
+        })
+        .catch(err => console.log)
+}
+
+var getContactById = async (id) => {
+    await axios.get(`/contacts/id/${id}`,)
+        .then(res => {
+            console.log(res.data)
+            return res.data
+        })
+        .catch(err => console.log)
+}
+
+var updateContactById = async (id, body) => {
+    await axios.put(`/contacts/id/${id}`, body)
+        .then(res => {
+            console.log(res.data)
+            return res.data
+        })
+        .catch(err => console.log)
+}
+
+var deleteContactById = async (id) => {
+    await axios.delete(`/contacts/id/${id}`)
+        .then(res => {
+            console.log(res.data)
+            return res.data
+        })
+        .catch(err => console.log)
+}
+
+export { Login, Register, getUserInfo, updateUserInfo, deleteUser,
+    isVerified, sendVerificationEmail, verifyUser, addContact,
+    getAllContacts, searchContacts, getContactById, updateContactById,
+    deleteContactById }

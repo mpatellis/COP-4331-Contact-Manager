@@ -7,7 +7,7 @@ module.exports = () => {
     .post(controller.contact.addNew)
 
   router.route('/search')
-    .get(controller.contact.search)
+    .post(controller.contact.search)
   router.route('/id/:contactId')
     .get(controller.contact.getById)
     .put(controller.contact.updateById)

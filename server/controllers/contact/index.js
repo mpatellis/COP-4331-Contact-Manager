@@ -14,11 +14,17 @@ exports.addNew = (req, res) => { //  :)
 }
 
 exports.search = (req, res) => { // :)
+  console.log(req.body)
   if (!req.body.search) return res.status(401).json({ message: 'Must include search param' })
+  console.log(req.body.search)
   var searchParams = req.body.search.split(' ')
+  searchParams[0] = searchParams[0] || ''
+  searchParams[1] = searchParams[1] || ''
+  console.log(searchParams)
+  console.log(req.user._id)
   Contact.find({
     $and: [
-      { owner: req.body._id }, // must have corect owner
+      { owner:  req.user._id}, // must have corect owner
       {
         $or: [
           {
@@ -36,7 +42,7 @@ exports.search = (req, res) => { // :)
         ]
       }
     ]
-  }, { owner: 0 },
+  }, {  },
   (err, contact) => {
     if (err) {
       res.send(err)
@@ -60,7 +66,9 @@ exports.getById = (req, res) => { // :)
   Contact.findById(req.params.contactId, (err, contact) => {
     if (err) {
       res.send(err)
-    } else if (contact.owner === req.body._id) {
+    } else if (!contact){
+      res.json({})
+    } else if (contact.owner == req.user._id) {
       res.json(contact)
     } else {
       return res.status(401).json({ message: 'Unauthorized user!' })
@@ -79,7 +87,7 @@ exports.updateById = (req, res) => { // :)
 }
 
 exports.deleteById = (req, res) => { // :)
-  Contact.remove({ owner: req.user._id, _id: req.params.contactId }, (err, contact) => {
+  Contact.deleteOne({ owner: req.user._id, _id: req.params.contactId }, (err, contact) => {
     if (err) {
       res.send(err)
     } else {

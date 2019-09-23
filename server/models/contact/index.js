@@ -22,7 +22,7 @@ const contactSchema = new Schema({
   phone: {
     type: String,
     required: 'Enter phone number',
-    unique: true
+    //unique: true
   },
   favorite: {
     type: Boolean,

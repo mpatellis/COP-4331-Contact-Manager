@@ -56,7 +56,6 @@ exports.getAll = (req, res) => {
 }
 
 exports.getById = (req, res) => { // :)
-  console.log(req)
   User
     .findById(req.user._id, { _id: 0, hashPassword: 0 })
     .exec((err, user) => {
