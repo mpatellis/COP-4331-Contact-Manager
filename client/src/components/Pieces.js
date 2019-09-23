@@ -5,7 +5,7 @@ import {
     Toolbar,    CssBaseline,    Link,
     Typography, TextField,      ExpansionPanel,
     Divider,    IconButton,     InputBase,
-    Fab,        Snackbar,
+    Fab,        Snackbar,       Popover,
 } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
@@ -34,6 +34,8 @@ export default function PersistentDrawerRight() {
   const [isVerified, setVerification] = React.useState(false)
   const [Error, setError] = React.useState({})
   const [contacts, setContacts] = React.useState([])
+  const [render, setRender] = React.useState(true)
+
 
   var password =''
   var username =''
@@ -202,7 +204,6 @@ export default function PersistentDrawerRight() {
   function handleSearch() {
     searchContacts(search)
     .then(res => {
-
       setContacts(res)
     })
     
@@ -210,6 +211,7 @@ export default function PersistentDrawerRight() {
 
   // TODO figure out how to pass contacts into this function
   function ContactPanel (props) {
+    if (render) console.log(render)
     if(isLogedIn && hasAccount)
     {
       // var i1 = {firstName:"Michael", lastName:"Patellis", email:"jasdkfl@gmail.com", phone:"3215055848"}
@@ -217,7 +219,7 @@ export default function PersistentDrawerRight() {
       // var contacts = [i1, i2]
       var con = contacts || []
       return (
-        con.map((item) =>
+        con.map((item,index) =>
           <div className={classes.expansionWidith} key={item._id}>
             <ExpansionPanel>
               <ExpansionPanelSummary
@@ -238,13 +240,44 @@ export default function PersistentDrawerRight() {
                   Phone: {item.phone}
                 </Typography>
                 <IconButton size="small" className={classes.contactDeleteButton} aria-label="delete">
-                  <DeleteIcon />
+                  <DeleteIcon onClick={e => handleDeleteContact(item._id, index)}/>
                 </IconButton>
               </ExpansionPanelDetails>
             </ExpansionPanel>
           </div>
         )
       )
+    }
+    return null
+  }
+
+  function handleDeleteContact (_id,index){
+    deleteContactById(_id)
+    .then(res => {
+    var temp =contacts
+    temp.splice(index,1)
+    setContacts(temp)
+    setRender(!render)
+  }).catch()  
+  }
+
+  
+
+  function AddNewContact () {
+    if (isLogedIn && hasAccount)
+    {
+      return (<Popover 
+          anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        The content of the Popover.
+      </Popover>)
     }
     return null
   }
