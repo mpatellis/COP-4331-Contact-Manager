@@ -5,7 +5,7 @@ var loginRequired = require('../controllers/user').loginRequired
 
 module.exports = () => {
   router.get('/', (req, res, next) => {
-    return res.send('WORK PLEASE GET request successfull!!')
+    return res.send('GET request successfull!!')
   })
 
   router.use('/contacts', loginRequired, contactsRoute())
