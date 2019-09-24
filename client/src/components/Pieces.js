@@ -35,6 +35,7 @@ export default function PersistentDrawerRight() {
   const [Error, setError] = React.useState({})
   const [contacts, setContacts] = React.useState([])
   const [render, setRender] = React.useState(true)
+  const [lastSearch, setLastSearch] = React.useState('')
 
   if (JWT.validate(JWT.get()) && !isLogedIn){
     setIsLogedIn(true)
@@ -204,6 +205,7 @@ export default function PersistentDrawerRight() {
       } else return null
     }
   function handleSearch() {
+    setLastSearch(search)
     searchContacts(search)
     .then(res => {
       setContacts(res)
@@ -241,6 +243,7 @@ export default function PersistentDrawerRight() {
                   Email: {item.email} <br></br>
                   Phone: {item.phone}
                 </Typography>
+                <EditContact contact={item}/>
                 <IconButton size="small" className={classes.contactDeleteButton} aria-label="delete">
                   <DeleteIcon onClick={e => handleDeleteContact(item._id, index)}/>
                 </IconButton>
@@ -256,9 +259,10 @@ export default function PersistentDrawerRight() {
   function handleDeleteContact (_id,index){
     deleteContactById(_id)
     .then(res => {
-    var temp =contacts
-    temp.splice(index,1)
-    setContacts(temp)
+      searchContacts(lastSearch)
+      .then(res => {
+        setContacts(res)
+      }).catch()
     setRender(!render)
   }).catch()  
   }
@@ -396,6 +400,118 @@ export default function PersistentDrawerRight() {
     } else {
       return null
     }
+  }
+
+  var EditContact = (props) => {
+    var contact = props.contact
+    
+    const [values, setValues] = React.useState({
+        firstName: contact.firstName,
+        lastName: contact.lastName,
+        email: contact.email,
+        phone: contact.phone,
+      });
+    
+      const handleChange = (name) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        setValues({ ...values, [name]: event.target.value });
+      };
+
+    
+    const classes = useStyles();
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+  
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      setAnchorEl(event.currentTarget);
+      console.log(anchorEl)
+    };
+  
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    const handleEditContact = () => {
+      var Error
+      var contact = {firstName: values.firstName,
+                  lastName: values.lastName,
+                  email: values.email,
+                  phone: values.phone}
+          console.log(contact)
+          updateContactById(props.contact._id, contact )
+          .then(res => {
+            handleClose()
+            searchContacts(lastSearch)
+              .then(res => {
+                setContacts(res)
+              }).catch()
+            setRender(!render)
+          }).catch()
+    }
+  
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
+    return (
+      <div>
+        <IconButton size="small" className={classes.contactDeleteButton} aria-label="edit">
+                  <EditIcon onClick={handleClick}/>
+         </IconButton>
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+        >
+          <div className={classes.div1}>
+            <Typography variant="h6" className={classes.typography}>Edit Contact</Typography>
+            <TextField 
+              label="First name"
+              type="text"
+              margin="normal"
+              value={values.firstName}
+              onChange={handleChange('firstName')}
+              />
+            <TextField
+            label="Last name"
+            type="text"
+            margin="normal"
+            value={values.lastName}
+            onChange={handleChange('lastName')}
+            />
+            <TextField
+            label="Phone number"
+            type="text"
+            margin="normal"
+            value={values.phone}
+              onChange={handleChange('phone')}
+            />
+            <TextField
+            label="Email"
+            type="text"
+            margin="normal"
+            value={values.email}
+            onChange={handleChange('email')}
+            />
+            <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={handleEditContact}
+            >
+            Commit
+          </Button>
+          </div>  
+        </Popover>
+      </div>
+    )
   }
 
   // TODO Get proper object for mapping
