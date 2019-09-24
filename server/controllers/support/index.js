@@ -21,7 +21,7 @@ exports.isVerified = (req, res) => {
     if (err) {
       res.send(err)
     } else {
-      res.json({ is: user.isVerified })
+      res.json({ isVerified: user.isVerified })
     }
   })
 }
@@ -50,7 +50,7 @@ exports.verify = (req, res) => {
     if (err) {
       res.send(err)
     } else {
-      res.send({ message: 'Success' })
+      res.send(user)
     }
   })
 }
