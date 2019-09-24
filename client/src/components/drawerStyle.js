@@ -127,7 +127,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     emailCodeInput: {
       color: "white"
-    }
+    },
+    div1: {
+      padding: theme.spacing(1, 1, 1, 7),
+      width:300
+    },
+      
   })
 );
 

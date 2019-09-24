@@ -43,6 +43,18 @@ var Login = async(username,password) => {
     return Res
 }
 
+var usernameFree = async (username) => {
+    var Res
+    await axios.get(`user/username/${username}`)
+        .then(res => {
+            if (res.data.exists) {
+                Res = res.data.exists
+            } else Res = false
+        })
+        .catch(err => console.log)
+    return Res
+}
+
 var Register = async(username, email, password) => {
     var Res = {Error: {}}
     if (!username) {
@@ -93,12 +105,20 @@ var getUserInfo = async() => {
 
 var updateUserInfo = async (user) => {
     var Res
-    await axios.put('/user', user)
-        .then( res => {
-            console.log(res.data)
-            Res = res.data
-        })
-        .catch()
+    if (user.username)
+        await usernameFree(user.username)
+            .then(async res => {
+                if (!res) {
+                    Res.Error = 'Username already taken'
+                } else {
+                    await axios.put('/user', user)
+                        .then( res => {
+                            console.log(res.data)
+                            Res.data = res.data
+                        })
+                        .catch()
+                }
+            }).catch()    
     return Res
 }
 

@@ -36,7 +36,9 @@ export default function PersistentDrawerRight() {
   const [contacts, setContacts] = React.useState([])
   const [render, setRender] = React.useState(true)
 
-
+  if (JWT.validate(JWT.get()) && !isLogedIn){
+    setIsLogedIn(true)
+  }
   var password =''
   var username =''
   var email = ''
@@ -295,6 +297,107 @@ export default function PersistentDrawerRight() {
     return null
   }
 
+  function AddContactPopup() {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    var firstName = ''
+    var lastName = ''
+    var email = ''
+    var phone = ''
+  
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      setAnchorEl(event.currentTarget);
+      console.log(anchorEl)
+    };
+  
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    const handleAddContact = () => {
+      var Error
+      var contact = {firstName: firstName,
+                  lastName: lastName,
+                  email: email,
+                  phone: phone}
+        if (!firstName || !lastName){
+          Error = 'Please enter name'
+        } else if (!phone) {
+          Error = 'Please enter a phone number'
+        } else {
+          addContact(contact)
+          .then(handleClose).catch()
+        }
+    }
+  
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+    if (isLogedIn) {
+    return (
+      <div>
+        <Fab color="primary"  aria-label="add" className={classes.fab} onClick={handleClick}>
+          <AddIcon />
+        </Fab>
+        {/* <Button aria-describedby={id} variant="contained" onClick={handleClick}>
+          Open Popover
+        </Button> */}
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+        >
+          <div className={classes.div1}>
+            <Typography variant="h6" className={classes.typography}>Add New Contact</Typography>
+            <TextField 
+              label="First name"
+              type="text"
+              margin="normal"
+              onChange={e => {firstName = e.target.value}}
+              />
+            <TextField
+            label="Last name"
+            type="text"
+            margin="normal"
+            onChange={e => {lastName = e.target.value}}
+            />
+            <TextField
+            label="Phone number"
+            type="text"
+            margin="normal"
+            onChange={e => {phone = e.target.value}}
+            />
+            <TextField
+            label="Email"
+            type="text"
+            margin="normal"
+            onChange={e => {email = e.target.value}}
+            />
+            <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={handleAddContact}
+          >
+            ADD
+          </Button>
+          </div>
+          
+        </Popover>
+      </div>
+    )
+    } else {
+      return null
+    }
+  }
+
   // TODO Get proper object for mapping
   function Options (props) {
     if (isLogedIn && hasAccount)
@@ -432,7 +535,7 @@ export default function PersistentDrawerRight() {
           < SearchBar />
           <SearchButton />
           <div className={classes.grow} />
-          <NewContactButton />
+          <AddContactPopup />
           <IconButton
             color="inherit"
             aria-label="open drawer"
