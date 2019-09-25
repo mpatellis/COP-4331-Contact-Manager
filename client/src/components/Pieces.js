@@ -18,6 +18,7 @@ import UndoIcon from '@material-ui/icons/Undo';
 import DeleteIcon from "@material-ui/icons/Delete";
 import JWT from 'jwt-client'
 
+
 import { Login, Register, getUserInfo, updateUserInfo, deleteUser,
     isVerified, sendVerificationEmail, verifyUser, addContact,
     getAllContacts, searchContacts, getContactById, updateContactById,
@@ -52,6 +53,7 @@ export default function PersistentDrawerRight() {
   var username =''
   var email = ''
   var search = ''
+  var emailCode = ''
 
 
 
@@ -183,7 +185,6 @@ export default function PersistentDrawerRight() {
     return null
   }
 
-    // TODO add functionality
     function SearchBar (props) {
       if(isLogedIn && hasAccount)
       {
@@ -216,6 +217,7 @@ export default function PersistentDrawerRight() {
         )
       } else return null
     }
+
   function handleSearch() {
     setLastSearch(search)
     searchContacts(search)
@@ -225,14 +227,10 @@ export default function PersistentDrawerRight() {
     
   }
 
-  // TODO figure out how to pass contacts into this function
   function ContactPanel (props) {
     if (render) console.log(render)
     if(isLogedIn && hasAccount)
     {
-      // var i1 = {firstName:"Michael", lastName:"Patellis", email:"jasdkfl@gmail.com", phone:"3215055848"}
-      // var i2 = {firstName:"asd", lastName:"qwe", email:"vzxcv@gmail.com", phone:"1234567"}
-      // var contacts = [i1, i2]
       var con = contacts || []
       return (
         con.map((item,index) =>
@@ -300,7 +298,6 @@ export default function PersistentDrawerRight() {
     return null
   }
 
-  // TODO add functionality
   function NewContactButton (props) {
     if (isLogedIn && hasAccount)
     {
@@ -650,8 +647,7 @@ export default function PersistentDrawerRight() {
           className={classes.textField}
           margin="normal"
           InputProps={{
-            readOnly: editable,
-            onChange:handleChange(item)
+            readOnly: true,
           }}
         />
         )
@@ -660,7 +656,6 @@ export default function PersistentDrawerRight() {
     return null
   }
 
-  // TODO feed in real verification string
   function VerifiedEmail (props) {
     if (isLogedIn && hasAccount)
     {
@@ -734,7 +729,6 @@ export default function PersistentDrawerRight() {
     return null
   }
 
-  // TODO Change onClick to resend email verify
   function VerifyEmailLink (props) {
     if(isLogedIn && hasAccount && !isVerified)
     {
@@ -742,18 +736,13 @@ export default function PersistentDrawerRight() {
         <Link
             component="button"
             variant="body2"
-            onClick={(HandleVerifyEmailLink)}
+            onClick={(sendVerificationEmail())}
           >
             Click here to verify your email
           </Link>
       )
     }
     return null
-  }
-
-  // TODO send email code again
-  function HandleVerifyEmailLink (props) {
-    
   }
 
   // TODO accept verification code to update user's verification
@@ -772,21 +761,32 @@ export default function PersistentDrawerRight() {
         }}
         message={<span id="message-id">Enter your email verification code</span>}
         action={[
+          <div>
           <TextField
             id="outlined-name"
             label="Email Verify Code"
             className={classes.emailTextField}
             margin="normal"
             variant="outlined"
+            onChange={e => {emailCode = e.target.value; console.log(emailCode)}}
             InputProps={{
               className: classes.emailCodeInput
             }}
           />
+          <Button vartiant="contained" className={classes.button} onClick={handleVerifyClick}>
+            Verify
+          </Button>
+          </div>
         ]}
       />
       )
     }
     return null
+  }
+
+  function handleVerifyClick () {
+    var check = (verifyUser(emailCode))
+    setVerification(check)
   }
 
   return (
