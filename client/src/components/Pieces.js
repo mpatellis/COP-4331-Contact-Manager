@@ -6,6 +6,7 @@ import {
     Typography, TextField,      ExpansionPanel,
     Divider,    IconButton,     InputBase,
     Fab,        Snackbar,       Popover,
+    SwipeableDrawer
 } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
@@ -717,7 +718,7 @@ export default function PersistentDrawerRight() {
     .then(res => 
       setVerification(res)).catch()
   }
-
+  const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -755,7 +756,7 @@ export default function PersistentDrawerRight() {
         <ContactPanel />
         <VerifyEmailBanner />
       </main>
-      <Drawer
+      <SwipeableDrawer disableBackdropTransition={!iOS} disableDiscovery={iOS}
         className={classes.drawer}
         variant='persistent'
         anchor="right"
@@ -799,7 +800,7 @@ export default function PersistentDrawerRight() {
         {(isLogedIn) ? '':(hasAccount) ? 'Dont have an account? Register' : 'Already have an account? Login'} 
         </Link>
         
-      </Drawer>
+      </SwipeableDrawer>
     </div>
   );
 

@@ -3,8 +3,8 @@ var controller = require('../../controllers')
 var loginRequired = require('../../controllers/user').loginRequired
 
 module.exports = () => {
-  router.route('/allusers')
-    .get(controller.user.getAll)
+  // router.route('/allusers')
+  //   .get(controller.user.getAll)
   // .post(controller.user.addNew);
 
   router.route('/register')// :)
