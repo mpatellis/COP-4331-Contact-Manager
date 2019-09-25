@@ -5,6 +5,8 @@ var config = require('./config')
 
 require('./middleware')(app)
 
+app.use(express.static("client/build"));
+
 app.use(routes())
 
 var mongoose = require('mongoose')
