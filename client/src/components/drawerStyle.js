@@ -4,7 +4,7 @@ import {
     Theme,
     createStyles
   } from "@material-ui/core/styles";
-  // import { amber, green } from '@material-ui/core/colors';
+   import { amber, green } from '@material-ui/core/colors';
 
   
 const drawerWidth = 300;
@@ -127,6 +127,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     emailCodeInput: {
       color: "white"
+    },
+    emailBackgound: {
+      backgroundColor: green[600]
     },
     div1: {
       padding: theme.spacing(1, 1, 1, 7),

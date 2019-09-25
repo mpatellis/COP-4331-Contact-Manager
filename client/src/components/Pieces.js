@@ -24,6 +24,7 @@ import { Login, Register, getUserInfo, updateUserInfo, deleteUser,
     getAllContacts, searchContacts, getContactById, updateContactById,
     deleteContactById } from './auth'
 import useStyles from './drawerStyle'
+import { set } from "mongoose";
 
 
 export default function PersistentDrawerRight() {
@@ -33,21 +34,23 @@ export default function PersistentDrawerRight() {
   const [hasAccount, setHasAccount] = React.useState(true)
   const [isLogedIn, setIsLogedIn] = React.useState(false)
   const [editable, setEditable] = React.useState(true)
-  const [isVerified, setVerification] = React.useState(false)
+  const [isVerified, setVerification] = React.useState(true)
   const [Error, setError] = React.useState({})
   const [contacts, setContacts] = React.useState([])
   const [render, setRender] = React.useState(true)
   const [lastSearch, setLastSearch] = React.useState('')
   const [User, setUser] = React.useState({})
   const [saveUser, setSaveUser] = React.useState(true)
+  const [ready, setReady] = React.useState(false)
+  const [reRender, setReRender] = React.useState(false)
   
 
   if (JWT.validate(JWT.get()) && !isLogedIn){
     getUserInfo()
       .then(res => {
         setUser(res)
-        setIsLogedIn(true)
-      }).catch()
+        setVerification(res.isVerified)
+      }).then(setIsLogedIn(true)).catch()
   }
   var password =''
   var username =''
@@ -63,15 +66,16 @@ export default function PersistentDrawerRight() {
 
   function handleDrawerClose() {
     setOpen(false);
-    setVerification()
   }
+
 
 
   function handleSubmit() {
     setError({})
     if (isLogedIn) { // Logout
-        setIsLogedIn(false)
-        JWT.forget();
+        setUser({})
+      setIsLogedIn(false)
+      JWT.forget()
     } else if (hasAccount){ // Login
 
       Login(username,password)
@@ -81,8 +85,10 @@ export default function PersistentDrawerRight() {
           getUserInfo()
           .then(res => {
             setUser(res)
-          }).catch()
-          setIsLogedIn(true);
+            setVerification(res.isVerified)
+          }).then(setIsLogedIn(true))
+          setReRender(!reRender)
+          window.location.reload(false)
         } else {
           setError(res.Error)
         }
@@ -275,39 +281,6 @@ export default function PersistentDrawerRight() {
       }).catch()
     setRender(!render)
   }).catch()  
-  }
-
-  
-
-  function AddNewContact () {
-    if (isLogedIn && hasAccount)
-    {
-      return (<Popover 
-          anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        The content of the Popover.
-      </Popover>)
-    }
-    return null
-  }
-
-  function NewContactButton (props) {
-    if (isLogedIn && hasAccount)
-    {
-      return (
-        <Fab color="primary" aria-label="add" className={classes.fab}>
-          <AddIcon />
-        </Fab>
-      )
-    }
-    return null
   }
 
   function AddContactPopup() {
@@ -524,11 +497,11 @@ export default function PersistentDrawerRight() {
   }
 
   var EditUser = (props) => {
-    var user = User
+    if (reRender|| !render) console.log(render)
     
     const [values, setValues] = React.useState({
-        username: user.username,
-        email: user.email,
+        username: User.username,
+        email: User.email,
       });
     
       const handleChange = (name) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -566,72 +539,61 @@ export default function PersistentDrawerRight() {
               handleClose()
             //} else Error = res.Error
           }).catch()
-    }
+        }
   
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
-
-    return (
-      <div>
-        <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(handleClick)}>
-          <EditIcon />
-        </Fab>
-        <Popover
-          id={id}
-          open={open}
-          anchorEl={anchorEl}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-        >
-          <div className={classes.div1}>
-            <Typography variant="h6" className={classes.typography}>Edit User Info</Typography>
-            <TextField 
-              label="Username"
+    if (isLogedIn) {
+      return (
+        <div>
+          <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(handleClick)}>
+            <EditIcon />
+          </Fab>
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <div className={classes.div1}>
+              <Typography variant="h6" className={classes.typography}>Edit User Info</Typography>
+              <TextField 
+                label="Username"
+                type="text"
+                margin="normal"
+                value={values.username}
+                onChange={handleChange('username')}
+                />
+              <TextField
+              label="Email"
               type="text"
               margin="normal"
-              value={values.username}
-              onChange={handleChange('username')}
+              value={values.email}
+              onChange={handleChange('email')}
               />
-            <TextField
-            label="Email"
-            type="text"
-            margin="normal"
-            value={values.email}
-            onChange={handleChange('email')}
-            />
-            <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={handleEditUser}
-            >
-            Commit
-          </Button>
-          </div>  
-        </Popover>
-      </div>
-    )
+              <Button 
+              variant="contained" 
+              color="primary" 
+              onClick={handleEditUser}
+              >
+              Commit
+            </Button>
+            </div>  
+          </Popover>
+        </div>
+      )} else return null
   }
 
   // TODO Get proper object for mapping
   function Options (props) {
-    
-    const [UserValues, setUserValues] = React.useState({
-      username: User.username,
-      email: User.email,
-    });
-  
-    const handleChange = (name) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setUserValues({ ...UserValues, [name.name]: event.target.value });
-    };
-
-
     if (isLogedIn && hasAccount)
     {
       var usr = {label: "Username",name: 'username', val: User.username} 
@@ -678,57 +640,6 @@ export default function PersistentDrawerRight() {
     return null
   }
 
-  function HandleEdit (props) {
-    setEditable(!editable)
-  }
-
-  function HandleSave () {
-    setSaveUser(true)
-    setEditable(!editable)
-  }
-  function EditOrUndo (){
-    if (editable) {
-      return <EditIcon />
-    } else {
-      return <UndoIcon />
-    }
-  }
-
-  function SaveEdit () {
-    if (!editable) {
-      return (
-        <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(HandleEdit)}>
-          Save
-        </Fab>
-      )
-    } else return null
-  }
-
-  function EditOptions (props) {
-    if(isLogedIn && hasAccount)
-    { 
-      if (editable){
-        return (
-          <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(HandleEdit)}>
-          <EditOrUndo />
-        </Fab>
-      )} else {
-        return (
-          <div>
-            <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(HandleEdit)}>
-              <EditOrUndo />
-            </Fab>
-            <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(HandleSave)}>
-          Save
-        </Fab>
-        </div>
-          
-        )
-      }
-    }
-    return null
-  }
-
   function VerifyEmailLink (props) {
     if(isLogedIn && hasAccount && !isVerified)
     {
@@ -759,34 +670,52 @@ export default function PersistentDrawerRight() {
         ContentProps={{
           'aria-describedby': 'message-id',
         }}
+        className={classes.emailBackgound}
         message={<span id="message-id">Enter your email verification code</span>}
-        action={[
-          <div>
-          <TextField
-            id="outlined-name"
-            label="Email Verify Code"
-            className={classes.emailTextField}
-            margin="normal"
-            variant="outlined"
-            onChange={e => {emailCode = e.target.value; console.log(emailCode)}}
-            InputProps={{
-              className: classes.emailCodeInput
-            }}
-          />
-          <Button vartiant="contained" className={classes.button} onClick={handleVerifyClick}>
-            Verify
-          </Button>
-          </div>
-        ]}
+        // action={[
+        //   <div>
+        //   <TextField
+        //     id="outlined-name"
+        //     label="Email Verify Code"
+        //     className={classes.emailTextField}
+        //     margin="normal"
+        //     variant="outlined"
+        //     onChange={e => {emailCode = e.target.value; console.log(emailCode)}}
+        //     InputProps={{
+        //       className: classes.emailCodeInput
+        //     }}
+        //   />
+        //   <Button vartiant="contained" className={classes.button} onClick={handleVerifyClick}>
+        //     Verify
+        //   </Button>
+        //   </div>
+        // ]}
+      ><div>
+        <span vartiant="h6" className={classes.title} id="message-id">Enter your email verification code</span>
+      <TextField
+        id="outlined-name"
+        label="Email Verify Code"
+        className={classes.emailTextField}
+        margin="normal"
+        variant="outlined"
+        onChange={e => {emailCode = e.target.value; console.log(emailCode)}}
+        InputProps={{
+          className: classes.emailCodeInput
+        }}
       />
+      <Button vartiant="contained" className={classes.button} onClick={handleVerifyClick}>
+        Verify
+      </Button>
+      </div></Snackbar>
       )
     }
     return null
   }
 
   function handleVerifyClick () {
-    var check = (verifyUser(emailCode))
-    setVerification(check)
+    verifyUser(emailCode)
+    .then(res => 
+      setVerification(res)).catch()
   }
 
   return (
