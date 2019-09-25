@@ -591,6 +591,8 @@ export default function PersistentDrawerRight() {
         </div>
       )} else return null
   }
+  return null
+  }
 
   // TODO Get proper object for mapping
   function Options (props) {
