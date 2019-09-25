@@ -5,6 +5,8 @@ var config = require('./config')
 
 require('./middleware')(app)
 
+app.use(express.static("client/build"));
+
 app.use(routes())
 
 var mongoose = require('mongoose')
@@ -22,3 +24,4 @@ const PORT = config.port
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
 })
+
