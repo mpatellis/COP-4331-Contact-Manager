@@ -526,7 +526,7 @@ export default function PersistentDrawerRight() {
   var EditUser = (props) => {
     var user = User
     
-    const [values, setValues] = React.useState({
+      const [values, setValues] = React.useState({
         username: user.username,
         email: user.email,
       });
@@ -567,10 +567,12 @@ export default function PersistentDrawerRight() {
             //} else Error = res.Error
           }).catch()
     }
+    
   
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
-
+    if (isLogedIn && hasAccount)
+    {
     return (
       <div>
         <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(handleClick)}>
@@ -617,6 +619,8 @@ export default function PersistentDrawerRight() {
         </Popover>
       </div>
     )
+  }
+  return null
   }
 
   // TODO Get proper object for mapping
