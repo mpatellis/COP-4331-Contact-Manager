@@ -36,9 +36,14 @@ export default function PersistentDrawerRight() {
   const [contacts, setContacts] = React.useState([])
   const [render, setRender] = React.useState(true)
   const [lastSearch, setLastSearch] = React.useState('')
+  const [User, setUser] = React.useState({})
 
   if (JWT.validate(JWT.get()) && !isLogedIn){
-    setIsLogedIn(true)
+    getUserInfo()
+      .then(res => {
+        setUser(res)
+        setIsLogedIn(true)
+      }).catch()
   }
   var password =''
   var username =''
@@ -68,6 +73,10 @@ export default function PersistentDrawerRight() {
       .then(res => {
         if (!Object.keys(res.Error).length) {
           console.log('logging in')
+          getUserInfo()
+          .then(res => {
+            setUser(res)
+          }).catch()
           setIsLogedIn(true);
         } else {
           setError(res.Error)
@@ -570,9 +579,9 @@ export default function PersistentDrawerRight() {
 
   function EditOptions (props) {
     if(isLogedIn && hasAccount)
-    {
-      return (
-        <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(HandleEdit)}>
+    { 
+        return (
+          <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(HandleEdit)}>
           <EditIcon />
         </Fab>
       )

@@ -44,7 +44,7 @@ var Login = async(username,password) => {
 }
 
 var usernameFree = async (username) => {
-    var Res
+    var Res 
     await axios.get(`user/username/${username}`)
         .then(res => {
             if (res.data.exists) {
@@ -104,7 +104,7 @@ var getUserInfo = async() => {
 }
 
 var updateUserInfo = async (user) => {
-    var Res
+    var Res ={Error: {}}
     if (user.username)
         await usernameFree(user.username)
             .then(async res => {
