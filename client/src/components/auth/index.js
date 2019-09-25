@@ -108,8 +108,15 @@ var updateUserInfo = async (user) => {
     if (user.username)
         await usernameFree(user.username)
             .then(async res => {
-                if (!res) {
+                if (res) {
                     Res.Error = 'Username already taken'
+                    user.username = undefined
+                    await axios.put('/user', user)
+                        .then( res => {
+                            console.log(res.data)
+                            Res.data = res.data
+                        })
+                        .catch()
                 } else {
                     await axios.put('/user', user)
                         .then( res => {

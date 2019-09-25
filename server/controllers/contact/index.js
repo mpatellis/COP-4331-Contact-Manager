@@ -15,7 +15,7 @@ exports.addNew = (req, res) => { //  :)
 
 exports.search = (req, res) => { // :)
   console.log(req.body)
-  if (!req.body.search) return res.status(401).json({ message: 'Must include search param' })
+  //if (!req.body.search) return res.status(401).json({ message: 'Must include search param' })
   console.log(req.body.search)
   var searchParams = req.body.search.split(' ')
   searchParams[0] = searchParams[0] || ''

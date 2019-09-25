@@ -14,6 +14,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import UndoIcon from '@material-ui/icons/Undo';
 import DeleteIcon from "@material-ui/icons/Delete";
 import JWT from 'jwt-client'
 
@@ -37,6 +38,8 @@ export default function PersistentDrawerRight() {
   const [render, setRender] = React.useState(true)
   const [lastSearch, setLastSearch] = React.useState('')
   const [User, setUser] = React.useState({})
+  const [saveUser, setSaveUser] = React.useState(true)
+  
 
   if (JWT.validate(JWT.get()) && !isLogedIn){
     getUserInfo()
@@ -523,15 +526,121 @@ export default function PersistentDrawerRight() {
     )
   }
 
+  var EditUser = (props) => {
+    var user = User
+    
+    const [values, setValues] = React.useState({
+        username: user.username,
+        email: user.email,
+      });
+    
+      const handleChange = (name) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        setValues({ ...values, [name]: event.target.value });
+      };
+
+    
+    const classes = useStyles();
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+  
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      setAnchorEl(event.currentTarget);
+      console.log(anchorEl)
+    };
+  
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    const handleEditUser = () => {
+      var Error
+      var user = {username: values.username,
+                  email: values.email}
+          console.log(user)
+          updateUserInfo(user)
+          .then(res => {
+            getUserInfo()
+              .then(res => {
+                setUser(res)
+                setIsLogedIn(true)
+              }).catch()
+            //if (!Object.keys(res.Error).length) {
+              handleClose()
+            //} else Error = res.Error
+          }).catch()
+    }
+  
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
+    return (
+      <div>
+        <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(handleClick)}>
+          <EditIcon />
+        </Fab>
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+        >
+          <div className={classes.div1}>
+            <Typography variant="h6" className={classes.typography}>Edit User Info</Typography>
+            <TextField 
+              label="Username"
+              type="text"
+              margin="normal"
+              value={values.username}
+              onChange={handleChange('username')}
+              />
+            <TextField
+            label="Email"
+            type="text"
+            margin="normal"
+            value={values.email}
+            onChange={handleChange('email')}
+            />
+            <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={handleEditUser}
+            >
+            Commit
+          </Button>
+          </div>  
+        </Popover>
+      </div>
+    )
+  }
+
   // TODO Get proper object for mapping
   function Options (props) {
+    
+    const [UserValues, setUserValues] = React.useState({
+      username: User.username,
+      email: User.email,
+    });
+  
+    const handleChange = (name) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setUserValues({ ...UserValues, [name.name]: event.target.value });
+    };
+
+
     if (isLogedIn && hasAccount)
     {
-      var usr = {label: "Username", val: "mpatellis"} 
-      var email = {label: "Email", val: "gmail.com"}
+      var usr = {label: "Username",name: 'username', val: User.username} 
+      var email = {label: "Email",name: 'email', val: User.email}
       var lists = [usr, email]
       var bool = editable
-      console.log(bool)
       return (
         lists.map((item) =>
         <TextField
@@ -542,6 +651,7 @@ export default function PersistentDrawerRight() {
           margin="normal"
           InputProps={{
             readOnly: editable,
+            onChange:handleChange(item)
           }}
         />
         )
@@ -554,7 +664,7 @@ export default function PersistentDrawerRight() {
   function VerifiedEmail (props) {
     if (isLogedIn && hasAccount)
     {
-      var isVerifiedStr = "False"
+      var isVerifiedStr = User.isVerified
       if (isVerified)
         isVerifiedStr = "True"
       return (
@@ -577,14 +687,49 @@ export default function PersistentDrawerRight() {
     setEditable(!editable)
   }
 
+  function HandleSave () {
+    setSaveUser(true)
+    setEditable(!editable)
+  }
+  function EditOrUndo (){
+    if (editable) {
+      return <EditIcon />
+    } else {
+      return <UndoIcon />
+    }
+  }
+
+  function SaveEdit () {
+    if (!editable) {
+      return (
+        <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(HandleEdit)}>
+          Save
+        </Fab>
+      )
+    } else return null
+  }
+
   function EditOptions (props) {
     if(isLogedIn && hasAccount)
     { 
+      if (editable){
         return (
           <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(HandleEdit)}>
-          <EditIcon />
+          <EditOrUndo />
         </Fab>
-      )
+      )} else {
+        return (
+          <div>
+            <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(HandleEdit)}>
+              <EditOrUndo />
+            </Fab>
+            <Fab color="secondary" size="small" aria-label="edit" className={classes.fab} onClick={(HandleSave)}>
+          Save
+        </Fab>
+        </div>
+          
+        )
+      }
     }
     return null
   }
@@ -695,7 +840,8 @@ export default function PersistentDrawerRight() {
         {(isLogedIn) ? 'Welcome':(hasAccount) ? 'Please Login' : 'Please Create an Account'}
         </Typography>
         <div className={classes.grow} />
-        <EditOptions />
+        {/* <EditOptions /> */}
+        <EditUser />
         </div>
         <Divider />
         <Username />
