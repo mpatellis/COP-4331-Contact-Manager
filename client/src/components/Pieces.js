@@ -768,7 +768,7 @@ export default function PersistentDrawerRight() {
         }}
       >
         <div className={classes.drawerHeader}>
-        <Typography variant="h6" noWrap className={classes.title}>
+        <Typography variant="h6" noWrap className={classes.title} onClick={handleDrawerClose}>
         {(isLogedIn) ? 'Welcome':(hasAccount) ? 'Please Login' : 'Please Create an Account'}
         </Typography>
         <div className={classes.grow} />
