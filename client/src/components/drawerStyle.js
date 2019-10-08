@@ -4,7 +4,7 @@ import {
     Theme,
     createStyles
   } from "@material-ui/core/styles";
-   import { amber, green } from '@material-ui/core/colors';
+   import { green } from '@material-ui/core/colors';
 
   
 const drawerWidth = 300;

@@ -1,7 +1,7 @@
 import React from "react";
 import clsx from "clsx";
 import {
-    Drawer,     AppBar,         Button,
+    AppBar,         Button,
     Toolbar,    CssBaseline,    Link,
     Typography, TextField,      ExpansionPanel,
     Divider,    IconButton,     InputBase,
@@ -15,17 +15,17 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
-import UndoIcon from '@material-ui/icons/Undo';
 import DeleteIcon from "@material-ui/icons/Delete";
 import JWT from 'jwt-client'
 
 
-import { Login, Register, getUserInfo, updateUserInfo, deleteUser,
-    isVerified, sendVerificationEmail, verifyUser, addContact,
-    getAllContacts, searchContacts, getContactById, updateContactById,
-    deleteContactById } from './auth'
+import { Login, Register, getUserInfo, updateUserInfo, 
+     sendVerificationEmail, verifyUser, addContact,
+     searchContacts, updateContactById, deleteContactById
+    // ,isVerified,deleteUser,getAllContacts,getContactById,
+   } from './auth'
 import useStyles from './drawerStyle'
-import { set } from "mongoose";
+// import { set } from "mongoose";
 
 
 export default function PersistentDrawerRight() {
@@ -34,15 +34,13 @@ export default function PersistentDrawerRight() {
   const [open, setOpen] = React.useState(true);
   const [hasAccount, setHasAccount] = React.useState(true)
   const [isLogedIn, setIsLogedIn] = React.useState(false)
-  const [editable, setEditable] = React.useState(true)
+  // const [editable, setEditable] = React.useState(true)
   const [isVerified, setVerification] = React.useState(true)
   const [Error, setError] = React.useState({})
   const [contacts, setContacts] = React.useState([])
   const [render, setRender] = React.useState(true)
   const [lastSearch, setLastSearch] = React.useState('')
   const [User, setUser] = React.useState({})
-  const [saveUser, setSaveUser] = React.useState(true)
-  const [ready, setReady] = React.useState(false)
   const [reRender, setReRender] = React.useState(false)
   
 
@@ -315,6 +313,7 @@ export default function PersistentDrawerRight() {
           addContact(contact)
           .then(handleClose).catch()
         }
+        console.log(Error)
     }
   
     const open = Boolean(anchorEl);
@@ -415,7 +414,7 @@ export default function PersistentDrawerRight() {
     };
 
     const handleEditContact = () => {
-      var Error
+      // var Error
       var contact = {firstName: values.firstName,
                   lastName: values.lastName,
                   email: values.email,
@@ -525,7 +524,7 @@ export default function PersistentDrawerRight() {
     };
 
     const handleEditUser = () => {
-      var Error
+      // var Error
       var user = {username: values.username,
                   email: values.email}
           console.log(user)
@@ -600,7 +599,6 @@ export default function PersistentDrawerRight() {
       var usr = {label: "Username",name: 'username', val: User.username} 
       var email = {label: "Email",name: 'email', val: User.email}
       var lists = [usr, email]
-      var bool = editable
       return (
         lists.map((item) =>
         <TextField
@@ -756,11 +754,15 @@ export default function PersistentDrawerRight() {
         <ContactPanel />
         <VerifyEmailBanner />
       </main>
-      <SwipeableDrawer disableBackdropTransition={!iOS} disableDiscovery={iOS}
+      <SwipeableDrawer 
+        disableBackdropTransition={!iOS}
+        disableDiscovery={iOS}
         className={classes.drawer}
         variant='persistent'
         anchor="right"
         open={open}
+        onOpen={handleDrawerOpen}
+        onClose={handleDrawerClose}
         classes={{
           paper: classes.drawerPaper
         }}

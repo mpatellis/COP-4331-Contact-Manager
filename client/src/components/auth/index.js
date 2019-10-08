@@ -154,11 +154,11 @@ var isVerified = async (user) => {
 }
 
 var sendVerificationEmail = async () => {
-    var Res
+    //var Res
     await axios.get('/user/verify')
         .then( res => {
             console.log(res.data)
-            Res = res.data
+            //Res = res.data
         })
         .catch()
 }
